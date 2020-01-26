@@ -35,6 +35,9 @@ bot.on('message', message => {
     case 'website':
       message.channel.sendMessage('https://github.com/krissylegaspi/KrisBot')
       break;
+    case 'LOL':
+      message.channel.sendMessage('That made me breathe air out of my nose!')
+      break;
     case 'meme':
       if (args[1] === 'version') {
         message.channel.sendMessage('');

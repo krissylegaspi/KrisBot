@@ -23,6 +23,15 @@ bot.on('ready', () => {
 });
 
 bot.on('message', message => {
+  if (message.content == "LOL") {
+    message.channel.sendMessage('That made me breathe air out of my nose!');
+  }
+  if (message.content == "omg") {
+    message.channel.sendMessage('I know, right?');
+  }
+})
+
+bot.on('message', message => {
 
   let args = message.content.substring(PREFIX.length).split(" ");
 

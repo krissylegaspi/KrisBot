@@ -55,8 +55,12 @@ bot.on('message', message => {
       }
       break;
     case 'clear':
-      if (!args[1]) return message.reply('Error, please define a second argument.')
-      message.channel.bulkDelete(args[1]);
+      // if (!args[1]) return message.reply('Error, please define a second argument.')
+      // message.channel.bulkDelete(args[1]);
+      if (message.member.roles.some(role => role.name === 'Moderator')) {
+        if (!args[1]) return message.reply('Error, please define a second argument.')
+        message.channel.bulkDelete(args[1]);
+      }
       break;
     case 'rip':
       const attachment = new Attachment('./rip.png');
@@ -102,21 +106,48 @@ bot.on('message', message => {
       break;
 
     case 'skip':
-      var server = servers[message.guild.id];
-      if (server.dispatcher) server.dispatcher.end();
-      message.channel.sendMessage("Skipping the song.")
+      if (message.member.roles.some(role => role.name === 'Moderator')) {
+        var server = servers[message.guild.id];
+        if (server.dispatcher) server.dispatcher.end();
+        message.channel.sendMessage("Skipping the song.")
+      }
       break;
     case 'stop':
-      var server = servers[message.guild.id];
-      if (message.guild.voiceConnection) {
-        for (var i = server.queue.length - 1; i >= 0; i--) {
-          server.queue.splice(i, 1);
+      if (message.member.roles.some(role => role.name === 'Moderator')) {
+        var server = servers[message.guild.id];
+        if (message.guild.voiceConnection) {
+          for (var i = server.queue.length - 1; i >= 0; i--) {
+            server.queue.splice(i, 1);
+          }
+          server.dispatcher.end();
+          message.channel.sendMessage("Queue has ended.")
+          console.log('Stopped the queue.')
         }
-        server.dispatcher.end();
-        message.channel.sendMessage("Queue has ended.")
-        console.log('Stopped the queue.')
+        if (message.guild.connection) message.guild.voiceConnection.disconnect();
       }
-      if (message.guild.connection) message.guild.voiceConnection.disconnect();
+      break;
+
+      // Admin commands
+    case 'kick':
+      if (message.member.roles.some(role => role.name === 'Moderator')) {
+        if (!args[1]) message.channel.send('You need to choose a user.')
+        const user = message.mentions.users.first();
+        if (user) {
+          const member = message.guild.member(user);
+          if (member) {
+            member.kick('You were kicked from the server!').then(() => {
+              message.reply(`Successfully kicked ${user.tag}`);
+            }).catch(error => {
+              message.reply('I was unable to kick the member.');
+              console.log(error);
+            });
+          } else {
+            message.reply("That user isn\'t in the server.")
+          }
+        } else {
+          message.reply('That user isn\'t in the server.')
+        }
+      }
       break;
 
   }

@@ -5,11 +5,13 @@
 
 ## Description
 A discord bot that features many things!
+[Add this bot to your server!](https://discordapp.com/oauth2/authorize?client_id=670094364801761291&scope=bot&permissions=424864894)
 
 ## Features
 * Chat commands
-* Music play and queue
+* Music playback
 
 ## Built With
-* Node.js
+* Node
+* JavaScript
 * Discord

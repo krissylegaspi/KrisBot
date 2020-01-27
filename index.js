@@ -6,6 +6,7 @@ const {
 } = require('discord.js');
 const bot = new Discord.Client();
 const token = process.env.DISCORD_TOKEN;
+const giphyToken = process.env.GIPHY_TOKEN;
 // console.log('token=' + token)
 
 const ytdl = require("ytdl-core");
@@ -17,6 +18,8 @@ const PREFIX = '!';
 var servers = {
 
 };
+var GphApiClient = require('giphy-js-sdk-core')
+giphy = GphApiClient(giphyToken)
 
 bot.on('ready', () => {
   console.log('This bot is online!');
@@ -46,13 +49,6 @@ bot.on('message', message => {
       break;
     case 'LOL':
       message.channel.sendMessage('That made me breathe air out of my nose!')
-      break;
-    case 'meme':
-      if (args[1] === 'version') {
-        message.channel.sendMessage('');
-      } else {
-        message.channel.sendMessage('')
-      }
       break;
     case 'clear':
       // if (!args[1]) return message.reply('Error, please define a second argument.')
@@ -136,7 +132,18 @@ bot.on('message', message => {
           const member = message.guild.member(user);
           if (member) {
             member.kick('You were kicked from the server!').then(() => {
-              message.reply(`Successfully kicked ${user.tag}`);
+              // message.reply(`Successfully kicked ${user.tag}`);
+              giphy.search('gifs', {
+                  "q": "kick"
+                })
+                .then((response) => {
+                  var totalResponses = response.data.length;
+                  var responseIndex = Math.floor((Math.random() * 10) + 1) % totalResponses;
+                  var responseFinal = response.data[responseIndex];
+                  message.channel.send(`:wave: ${user.tag} has been successfully kicked.`, {
+                    files: [responseFinal.images.fixed_height.url]
+                  })
+                })
             }).catch(error => {
               message.reply('I was unable to kick the member.');
               console.log(error);

@@ -10,8 +10,10 @@ A discord bot that features many things!
 ## Features
 * Chat commands
 * Music playback
+* Permissions
 
 ## Built With
 * Node
 * JavaScript
+* Giphy API
 * Discord
